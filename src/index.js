@@ -11,14 +11,14 @@ import { baremuxPath } from "@mercuryworkshop/bare-mux/node";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const app = express();
 
-app.use(express.static(join(__dirname, "..", "static")));
+app.use(express.static(join(__dirname, "..", "public")));
 app.use("/uv/", express.static(uvPath));
 app.use("/epoxy/", express.static(epoxyPath));
 app.use("/baremux/", express.static(baremuxPath));
 
 app.use((req, res) => {
   res.status(404);
-  res.sendFile("index.html", { root: join(__dirname, "..", "static") });
+  res.sendFile("index.html", { root: join(__dirname, "..", "public") });
 });
 
 const server = createServer();
@@ -39,21 +39,3 @@ server.on("upgrade", (req, socket, head) => {
 
 let port = parseInt(process.env.PORT || "");
 if (isNaN(port)) port = 8080;
-
-server.on("listening", () => {
-  const address = server.address();
-  console.log("Listening on:");
-  console.log(`\thttp://localhost:${address.port}`);
-  console.log(`\thttp://${hostname()}:${address.port}`);
-});
-
-process.on("SIGINT", shutdown);
-process.on("SIGTERM", shutdown);
-
-function shutdown() {
-  console.log("SIGTERM signal received: closing HTTP server");
-  server.close();
-  process.exit(0);
-}
-
-server.listen({ port });
