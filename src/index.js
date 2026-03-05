@@ -20,7 +20,7 @@ app.use("/baremux/", express.static(baremuxPath));
 // Error for everything else
 app.use((req, res) => {
 	res.status(404);
-	res.sendFile("./public/404.html");
+	res.sendFile("index.html", { root: join(__dirname, "..", "static") });
 });
 
 const server = createServer();
